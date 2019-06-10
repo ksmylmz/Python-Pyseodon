@@ -2,6 +2,10 @@ from helper import Helper
 
 import requests as rq
 from symbol import except_clause
+from select import select
+from macpath import split
+
+
 
 class controller(Helper):
     def __init__(self,content):
@@ -116,7 +120,59 @@ class controller(Helper):
                 return 0
         else:
              return 0       
+    
+    def checkFlash(self):
+        flashtag = self.getTagsByName("embed") 
+        if len(flashtag)>0:
+            return 1
+        else:
+            return 0
         
+    def checkiframe(self):
+        iframe = self.getTagsByName("iframe") 
+        if len(iframe)>0:
+            return 1
+        else:
+            return 0
+        
+    def checkfavicon(self):
+        favicon = self.getbyProp("link","rel","icon")
+        if len(favicon)>0:
+            return 1                
+        else:
+             return 0 
+         
+    def checkSize(self,tagname,prop):
+        tags= self.getTagsByName(tagname)
+        filesize=0
+        
+        if len(tags)>0:
+            for tag in tags:
+                try:
+                    src= tag[prop]
+                            
+                    if tagname=="link" and "css" not in src: continue  
+                    filesize+=len(rq.get(tag[prop]).content)
+                except KeyError:
+                   filesize+=len(str(tag))
+                   
+        return filesize/1024
+    
+    def checkSizes(self):
+        img = self.checkSize("img","src")
+        style = self.checkSize("style","type")
+        script = self.checkSize("script","src")
+        css = self.checkSize("link","href")
+        html = len(str(self.content))/1024
+        sizes = {"img":img,"css":style+css,"script":script,"html":html}
+        return sizes;
+      
+                      
+        
+
+                  
+        
+           
 
   
 

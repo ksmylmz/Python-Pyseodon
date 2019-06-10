@@ -2,11 +2,13 @@ import requests
 from controller import controller
 import urllib.request
 import random
+import time
+from _tracemalloc import start
 
 
 #path ="https://www.w3schools.com/python/python_dictionaries.asp"
-#path ="https://www.hepsiburada.com"
-#path = "http://www.ufoweb.net"
+#path ="https://www.ddfs.com/uyari/"
+path = "http://www.ufoweb.net"
 r = requests.get(path)
 
 c = controller(r.content)
@@ -75,9 +77,31 @@ if c.checkResponsive() :
 else:
     print("Analytics tag not found")"""
 
-
-
-
+"""
+if c.checkFlash():
+    print("Flash tag dedected")
+else:
+    print("flash tag not found")
+    
+if c.checkFlash():
+    print("iframe dedected")
+else:
+    print("iframe tag not found")
+    
+ 
+if c.checkfavicon():
+    print("there is favicon")
+else:
+    print("favicon tag not found")"""
+"""    
+startTime = time.time()
+print(c.checkSizes())
+stopTime = time.time()
+measureTime =stopTime-startTime
+#print(time.ctime(startTime),time.ctime(stopTime))
+print("pageLoad Time :"+str(measureTime))
+"""
+ 
 """
 title 10~70 +
 meta description 70 and 320 characters+
@@ -90,16 +114,16 @@ sitemap-
 
 check analytics tag+
 check responsive+ 
-flash check
-check iframe
-check favicon
+flash check+
+check iframe+
+check favicon+
 
-count load page time
+count load page time+
 
-check images size, check css size, check js size,check html size,check total size
+check images size, check css size, check js size,check html size,check total size+
 
 
-js errors
+js errors-
 
 gzip compesion
 
