@@ -166,7 +166,22 @@ class controller(Helper):
         html = len(str(self.content))/1024
         sizes = {"img":img,"css":style+css,"script":script,"html":html}
         return sizes;
-      
+    
+    def checkSourcesForMinify(self,tagname,prop,baseurl):
+        tags= self.getTagsByName(tagname)
+        unminified=[]    
+        if len(tags)>0:
+            for tag in tags:
+                try:
+
+                    src =tag[prop]  if "http:" in tag[prop] or "https:" in tag[prop]  else baseurl+"/"+tag[prop]
+                    if tagname=="link" and "css" not in src: continue  
+                    _content = str(rq.get(src).content)
+                    if len(_content.split("/r"))>1 or len(_content.split("/n"))>1:
+                        unminified.append(src)    
+                except KeyError:
+                   continue
+        return unminified
                       
         
 

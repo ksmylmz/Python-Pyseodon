@@ -4,12 +4,29 @@ import urllib.request
 import random
 import time
 from _tracemalloc import start
+import re
+
 
 
 #path ="https://www.w3schools.com/python/python_dictionaries.asp"
-#path ="https://www.ddfs.com/uyari/"
-path = "http://www.ufoweb.net"
-r = requests.get(path)
+#path ="https://www.lensoptik.com.tr/"
+#path = "http://www.ufoweb.net"
+#path = "https://www.garantibbva.com.tr/tr"
+path = "https://www.ddfs.com/"
+#path = "https://wp.pts.net/"
+#Content-Encoding
+headers = {  # headers dict to send in request
+  "header_name": "headers_value",
+ }
+
+params = {  # params to be encoded in the url
+  "param_name": "param_value",
+}
+
+
+r = requests.get(path, params=params, headers=headers)
+
+
 
 c = controller(r.content)
 
@@ -101,6 +118,28 @@ measureTime =stopTime-startTime
 #print(time.ctime(startTime),time.ctime(stopTime))
 print("pageLoad Time :"+str(measureTime))
 """
+
+
+"""
+try:
+    print(r.headers["Content-Encoding"])
+except KeyError:
+    print("There is any compression configration at your server")
+    
+"""
+
+#r2  = requests.get("http://ufoweb.net/assets/esnafy/lib/jquery/dist/jquery.js");
+#r2  = requests.get("https://www.ddfs.com/frontend/skin/ddfs/stylesheet/font-awesome-4.7.0/css/font-awesome.min.css");
+#_content = str(r2.content)
+
+
+""""
+for i in  c.checkSourcesForMinify("script","src",path):
+    print(i)
+print("------------------------------------")
+for i in  c.checkSourcesForMinify("link","href",path):
+    print(i)
+ """
  
 """
 title 10~70 +
@@ -125,11 +164,11 @@ check images size, check css size, check js size,check html size,check total siz
 
 js errors-
 
-gzip compesion
+gzip compesion+
 
-check unsized images
+check unsized images-
 
-js css mifycation
+js css mifycation+
 
 
 """
