@@ -1,199 +1,207 @@
-from helper import Helper
-
-import requests as rq
-from symbol import except_clause
-from select import select
-from macpath import split
-
-
-
-class controller(Helper):
-    def __init__(self,content):
-        Helper.__init__(self,content)
+import requests
+import urllib.request
+import random
+import time
+from _operator import length_hint
 
 
 
-    def saveLinkList(self):     
-        links  = self.getAllTags("a")
-        f =open("url.txt","a")
-        for link in links:
-            line = str(link.get("href"))+"\n"#+link.text()+"
-            print(line)
-            f.write(line)
-            
-        f.close()
 
-    def betweenContent(self,tagname,prop,val,min,max):
-        tag = self.getbyProp(tagname,prop,val)
-        chck = self.checkResult(tag,tagname,val)
-        if chck!=0:
-            return chck
-        else:
-            if len(tag[0]["content"])<min:
-                return tagname+"->"+val+" : character less than "+str(min)+" X "
-            elif len(tag[0]["content"])>max:
-                return tagname+"->"+val+" : character more than "+str(max)+" X "
-            else:
-                return tagname+"->"+val+" : character between "+str(min)+"-"+str(max)+" OK"
-            
-            
-          
-    def betweenText(self,tagname,min,max):
-        tag = self.getbyTagname(tagname)
-        if len(tag.text)<min:
-            return tagname+"-> : character less than "+str(min)+" X "
-        elif len(tag.text)>max:
-            return tagname+"-> : character more than "+str(max)+" X "
-        else:
-            return tagname+"-> : character between "+str(min)+"-"+str(max)+" OK"
-    
-    
-    def countAndListbyTagName(self,tag):
-         tags = self.getTagsByName(tag)
-         result  = {"length":len(tags),"taglist":tags}
-         return result
-     
-    def checkImgAlt(self):
-        imgs  = self.getTagsByName("img")
-        altless  = []
-        for img in imgs:
-            if img.get("alt") is None:
-                altless.append(img)
-        return altless
-    
-    
-    def getAllImg(self):
-        imgs  = self.getTagsByName("img")
-        return imgs
-    
-    def checkBrokenlinks(self,baseurl):
-        broken=[]
-        links = self.getTagsByName("a")
-        for link in links:
-            if "javascript" in link["href"]: continue
-            if link["href"][0]=="#": continue
-            if "mailto:" in link["href"]: continue
-            path =link["href"]  if "http:" in link["href"] or "https:" in link["href"]  else baseurl+"/"+link["href"]
-            response = rq.get(path)
-            if response.status_code!=200: 
-                broken.append(path)             
-        return broken
-    
-    def checkFrendlyUrl(self):
-        unfrendly=[]
-        links = self.getTagsByName("a")
-        for link in links:
-            try:
-                if "javascript" in link["href"]: continue
-                if link["href"][0]=="#": continue
-                if "mailto:" in link["href"]: continue
-                if "asp" in  link["href"] or "php" in  link["href"] or "html" in  link["href"] or "?" in  link["href"]:
-                    unfrendly.append(link["href"])
 
-            except KeyError:
-                continue
-              
-        return unfrendly
+
+class controller():
     
-    def checkAnalytic(self):
-        scripts = self.getTagsByName("script")
-        for script in scripts:
-            try:
-                fcontent =str(script)
-                if "analytics" in fcontent:
-                    return 1
-                else:
-                    continue
-            except KeyError:
-                continue
-        return 0    
+    model=None
+    template = None
+    path = ""
+    r = None
     
-    def checkResponsive(self):
-        metaTag = self.getbyProp("meta","name","viewport")
-        if len(metaTag)>0:
-            try:
-                if "width=device-width" in metaTag[0]["content"]:   
-                    return 1
-                else:
-                    return 0 
-            except KeyError:
-                return 0
-        else:
-             return 0       
-    
-    def checkFlash(self):
-        flashtag = self.getTagsByName("embed") 
-        if len(flashtag)>0:
-            return 1
-        else:
-            return 0
+    def __init__(self,model,template,path):
+        self.model=model
+        self.template=template
+        self.path= path
         
+        
+        
+
+        
+    def checkMeta(self):
+
+        metaDescription = self.model.betweenContent("meta","name","description",70,320)
+        metakey = self.model.betweenContent("meta","name","keywords",0,300)
+        metaTitle = self.model.betweenContent("meta","name","title",10,70)
+        
+        if metaTitle=="meta->title :this tag not found!":
+            metaTitle = self.model.betweenText("title",10,70)
+            
+        _result = metaDescription+"<br/>"+metakey+"<br/>"+metaTitle  
+             
+        self.template.setResult(_result)
+    
+
+
+    
+    
+    def checkHtags(self):
+        h= self.model.countAndListbyTagName("h"+str(i))
+        print("H"+str(i)+" : "+str(h["length"])+" tags")
+        result=""
+        for items in h["taglist"]:
+            result+=items+"\n"
+        self.template.setResult(result)
+    
+    
+    def chkImgAlt(self):
+        altless = self.model.checkImgAlt()
+        result=" there is "+len(altless)+" img tag without alt properties\n"
+        for img in altless:
+            result+=img+"\n"
+        self.template.setResult(result)
+        
+    
+    def chkBroken(self):
+        brokenlist = self.model.checkBrokenlinks(path)
+        result=" there is "+len(brokenlist)+" img tag without alt properties\n"
+        for b in brokenlist:
+            result+=b+"\n"
+    
+    def unfrendly(self):
+        unfrendlylist = self.model.checkFrendlyUrl()
+        result=" there is "+len(unfrendlylist)+" img tag without alt properties\n"
+        for b in unfrendlylist:
+            result+=b+"\n"
+        self.template.setResult(result)
+        
+            
+            
+    def chkAnalytics(self):
+        if self.model.checkAnalytic() : 
+            self.template.setResult("Analtics tag implemented")
+        else:
+            self.template.setResult("Analytics tag not found")
+        
+    def chkMobil(self):
+        if self.model.checkResponsive():
+            self.template.setResult("Your web site is responsive ")
+        else:
+            self.template.setResult("Your web site is unresponsive")
+        
+        
+    def chkFlash(self):
+        if self.model.checkFlash():
+            self.template.setResult("Flash tag dedected")
+        else:
+            self.template.setResult("flash tag not found")
+    
     def checkiframe(self):
-        iframe = self.getTagsByName("iframe") 
-        if len(iframe)>0:
-            return 1
+        if self.model.checkFlash():
+            self.template.setResult("iframe dedected")
         else:
-            return 0
+            self.template.setResult("iframe tag not found")
         
-    def checkfavicon(self):
-        favicon = self.getbyProp("link","rel","icon")
-        if len(favicon)>0:
-            return 1                
+    def chkFavico(self):
+        if self.model.checkfavicon():
+            self.template.setResult("you have a  favicon")
         else:
-             return 0 
-         
-    def checkSize(self,tagname,prop):
-        tags= self.getTagsByName(tagname)
-        filesize=0
+            self.template.setResult("favicon tag not found")
         
-        if len(tags)>0:
-            for tag in tags:
-                try:
-                    src= tag[prop]
-                            
-                    if tagname=="link" and "css" not in src: continue  
-                    filesize+=len(rq.get(tag[prop]).content)
-                except KeyError:
-                   filesize+=len(str(tag))
-                   
-        return filesize/1024
-    
-    def checkSizes(self):
-        img = self.checkSize("img","src")
-        style = self.checkSize("style","type")
-        script = self.checkSize("script","src")
-        css = self.checkSize("link","href")
-        html = len(str(self.content))/1024
-        sizes = {"img":img,"css":style+css,"script":script,"html":html}
-        return sizes;
-    
-    def checkSourcesForMinify(self,tagname,prop,baseurl):
-        tags= self.getTagsByName(tagname)
-        unminified=[]    
-        if len(tags)>0:
-            for tag in tags:
-                try:
+    def chkPerformance(self):
+        startTime = time.time()
+        sizes  = self.model.checkSizes()
+        stopTime = time.time()
+        measureTime =stopTime-startTime
+        #print(time.ctime(startTime),time.ctime(stopTime))
+        load =  "pageLoad Time :"+str(measureTime)
+        # sizes = {"img":img,"css":style+css,"script":script,"html":html}
+        result="";
+        result+="Image size : "+sizes["img"]+" MB \n"
+        result+="Css size : "+sizes["css"]+" MB \n"
+        result+="Javascript size : "+sizes["script"]+" MB \n"
+        result+="Html Code Size : "+sizes["html"]+" MB  \n"
+        result+="Total size : "+sizes["img"]+sizes["css"]+sizes["script"]+sizes["html"]+" MB \n"
+        result+="<hr>"
+        result+="Page Load time : "+load+"seconds"
+        self.template.setResult(result)
+        
+    def checkGzip(self):
+        try:
+            result =  self.model._request.headers["Content-Encoding"]+" is active"
+            self.template.setResult(result)
+        except KeyError:
+            self.template.setResult("There is no any compression configration at your server")
+        
+    def chkScriptUnMinify(self):
+        result  = " Unminify Scripts:\n"
+        for i in  self.model.checkSourcesForMinify("script","src",path):
+            result+=i+" \n"
+        self.template.setResult(result)
+        
+    def chkCssUnMinify(self):
+        result  = " Unminify Css:\n"
+        for i in  self.model.checkSourcesForMinify("script","src",path):
+            result+=i+" \n"
+        self.template.setResult(result)
+            
+            
+                    
+                
 
-                    src =tag[prop]  if "http:" in tag[prop] or "https:" in tag[prop]  else baseurl+"/"+tag[prop]
-                    if tagname=="link" and "css" not in src: continue  
-                    _content = str(rq.get(src).content)
-                    if len(_content.split("/r"))>1 or len(_content.split("/n"))>1:
-                        unminified.append(src)    
-                except KeyError:
-                   continue
-        return unminified
-                      
+
+
+    def routes(self):
+        #routes
+       # btnMetaTags,btnHtags,btnImgAlt,btnBroken,btnUnfrendly,btnAnalytics,btnMobil,cgkFlash,
+       # btnIframe,btnFavico,btnPerformance,checkGzip,btnScriptUnMinify,btnCssUnMinify
+        self.template.btnMetaTags.clicked.connect(lambda:self.checkMeta())
+        self.template.btnHtags.clicked.connect(lambda:self.checkHtags())
+        self.template.btnImgAlt.clicked.connect(lambda:self.chkImgAlt())
+        self.template.btnBroken.clicked.connect(lambda:self.chkBroken())
+        self.template.btnUnfrendly.clicked.connect(lambda:self.unfrendly())
+        self.template.btnAnalytics.clicked.connect(lambda:self.chkAnalytics())
+        self.template.btnMobil.clicked.connect(lambda:self.chkMobil())
+        self.template.cgkFlash.clicked.connect(lambda:self.chkFlash())
+        self.template.btnIframe.clicked.connect(lambda:self.checkiframe())
+        self.template.btnFavico.clicked.connect(lambda:self.chkFavico())
+        self.template.btnPerformance.clicked.connect(lambda:self.chkPerformance())
+        self.template.checkGzip.clicked.connect(lambda:self.checkGzip())
+        self.template.btnScriptUnMinify.clicked.connect(lambda:self.chkScriptUnMinify()())
+        self.template.btnCssUnMinify.clicked.connect(lambda:self.chkCssUnMinify())
+
+        
+        
+        
+        
+        
         
 
-                  
-        
-           
+"""
+title 10~70 +
+meta description 70 and 320 characters+
+count h tags - list g tag text+
+check image alt+
+broken link+
+frendly url+
+robot.txt-
+sitemap-
 
-  
+check analytics tag+
+check responsive+ 
+flash check+
+check iframe+
+check favicon+
 
-    
+count load page time+
+
+check images size, check css size, check js size,check html size,check total size+
 
 
+js errors-
+
+gzip compesion+
+
+check unsized images-
+
+js css mifycation+
 
 
-
+"""        
