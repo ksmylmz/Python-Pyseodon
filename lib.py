@@ -1,12 +1,14 @@
 from bs4 import BeautifulSoup
 
 
+
 class lib:
     content  = None
-    
-    def __init__(self,content):
+    _request = None
+    def __init__(self,_request):
 
-        self.content = BeautifulSoup(content,"html.parser")
+        self.content = BeautifulSoup(_request.content,"html.parser")
+        self._request = _request
 
 
     def getAllTags(self,tagname):
@@ -53,6 +55,15 @@ class lib:
         else:
             return 0"""
             
+    def rateRes(self,min,max,currency,val):
+        if val>=max:
+            return "Should be less than "+str(max)+" "+currency
+        elif(val<=max and val>=min):
+            return " Fix!"
+        else:
+            return "Perfect"
+            
+        
 
     
               

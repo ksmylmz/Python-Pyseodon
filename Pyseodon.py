@@ -1,30 +1,39 @@
-from template import _mainView
-from model import model
 from controller import controller
 import requests
 import urllib.request
 from bs4 import BeautifulSoup
+import sys
+
+
+
+def catch_exceptions(t, val, tb):
+    QtWidgets.QMessageBox.critical(None,
+                                   "An exception was raised",
+                                   "Exception type: {}".format(t))
+    old_hook(t, val, tb)
+
+old_hook = sys.excepthook
+sys.excepthook = catch_exceptions
 
     
 if __name__ == '__main__':
     
-    _template = _mainView()
+
     
     #headers     
     headers = { "header_name": "headers_value" }
     params = {  "param_name": "param_value" }
-    path = "https://www.lensoptik.com.tr/"
+    path = ""
+   # path = "https://www.beethoven.com.tr/"
     
     #getrequest     
-    _request = requests.get(path, params=params, headers=headers)
+    #_request = requests.get(path, params=params, headers=headers)
 
 
-    #initialize Model    
-    _model  =model(_request.content)
 
-    _controller = controller(_model,_template,path)
-    _controller.routes()
-    _template.showWindow()
+    _controller = controller()
+    #_controller.routes()
+
 
 
 """

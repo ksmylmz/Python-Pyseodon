@@ -1,8 +1,12 @@
+from template import _mainView
+from model import model
 import requests
 import urllib.request
 import random
 import time
 from _operator import length_hint
+from logging import _startTime
+from threading import Thread
 
 
 
@@ -16,17 +20,22 @@ class controller():
     path = ""
     r = None
     
-    def __init__(self,model,template,path):
-        self.model=model
-        self.template=template
+
+    
+    def __init__(self):
+        self.template= _mainView()
+        self.template.btnsearchBox.clicked.connect(lambda:self.initRequest())
+        
+        self.template.showWindow()
         self.path= path
+
         
         
         
 
         
     def checkMeta(self):
-
+        
         metaDescription = self.model.betweenContent("meta","name","description",70,320)
         metakey = self.model.betweenContent("meta","name","keywords",0,300)
         metaTitle = self.model.betweenContent("meta","name","title",10,70)
@@ -37,46 +46,73 @@ class controller():
         _result = metaDescription+"<br/>"+metakey+"<br/>"+metaTitle  
              
         self.template.setResult(_result)
+        
     
 
 
     
     
     def checkHtags(self):
-        h= self.model.countAndListbyTagName("h"+str(i))
-        print("H"+str(i)+" : "+str(h["length"])+" tags")
         result=""
-        for items in h["taglist"]:
-            result+=items+"\n"
-        self.template.setResult(result)
+        message=""
+        for i in range(1,8):        
+            h= self.model.countAndListbyTagName("h"+str(i))
+            if h != "":
+                message+="H"+str(i)+" : "+str(h["length"])+" tags<br>"
+                for items in h["taglist"]:
+                    #print(items)
+                    result+=str(items)+"\n"
+                result+="\n\n\n"
+        self.template.setResult(message)        
+        self.template.appendConsole(result)       
     
     
     def chkImgAlt(self):
         altless = self.model.checkImgAlt()
-        result=" there is "+len(altless)+" img tag without alt properties\n"
+        message=" there is "+str(len(altless))+" img tag has no alt attribute<br/>"
+        result=""
         for img in altless:
-            result+=img+"\n"
-        self.template.setResult(result)
+            try:
+                result+=img["src"]+"\n"
+            except KeyError:
+                continue
+        self.template.setResult(message)
+        self.template.appendConsole(result)
         
     
-    def chkBroken(self):
-        brokenlist = self.model.checkBrokenlinks(path)
-        result=" there is "+len(brokenlist)+" img tag without alt properties\n"
+    def thCheckBroken(self):
+        brokenlist = self.model.checkBrokenlinks(self.path)
+        result=" there is "+str(len(brokenlist))+"  broken links<br/>"
         for b in brokenlist:
             result+=b+"\n"
+        self.template.setResult(result)
+
     
+    def chkBroken(self):
+        self.template.setResult("loading...")
+        _thread  =Thread(target = self.thCheckBroken)
+        _thread.start()
+        
+        
+
+        
+            
     def unfrendly(self):
         unfrendlylist = self.model.checkFrendlyUrl()
-        result=" there is "+len(unfrendlylist)+" img tag without alt properties\n"
+        message=" there is "+str(len(unfrendlylist))+" unfrendly urls"
+        result = ""
         for b in unfrendlylist:
             result+=b+"\n"
-        self.template.setResult(result)
+        self.template.setResult(message)
+        self.template.appendConsole(result)
         
             
             
     def chkAnalytics(self):
-        if self.model.checkAnalytic() : 
+        chk = self.model.checkAnalytic()
+        if chk["result"] : 
             self.template.setResult("Analtics tag implemented")
+            self.template.appendConsole(chk["tag"])
         else:
             self.template.setResult("Analytics tag not found")
         
@@ -106,22 +142,27 @@ class controller():
             self.template.setResult("favicon tag not found")
         
     def chkPerformance(self):
-        startTime = time.time()
+        startTime = time.process_time()
         sizes  = self.model.checkSizes()
         stopTime = time.time()
-        measureTime =stopTime-startTime
+        measureTime =time.process_time()-startTime
         #print(time.ctime(startTime),time.ctime(stopTime))
-        load =  "pageLoad Time :"+str(measureTime)
-        # sizes = {"img":img,"css":style+css,"script":script,"html":html}
+        load =  str(measureTime)
         result="";
-        result+="Image size : "+sizes["img"]+" MB \n"
-        result+="Css size : "+sizes["css"]+" MB \n"
-        result+="Javascript size : "+sizes["script"]+" MB \n"
-        result+="Html Code Size : "+sizes["html"]+" MB  \n"
-        result+="Total size : "+sizes["img"]+sizes["css"]+sizes["script"]+sizes["html"]+" MB \n"
+        result+="Image size : "+str(sizes["img"])+" MB <br>"
+        result+="Css size : "+str(sizes["css"])+" MB <br>"
+        result+="Javascript size : "+str(sizes["script"])+" MB <br>"
+        result+="Html Code Size : "+str(sizes["html"])+" MB <br>"
+        result+="Total size : "+str(sizes["totalsize"])+" MB"+self.model.rateRes(0,4," MB ",sizes["totalsize"])+" <br>"
         result+="<hr>"
-        result+="Page Load time : "+load+"seconds"
+        result+="Page Load time : "+load+" seconds"+self.model.rateRes(4,8," seconds",measureTime)
         self.template.setResult(result)
+        self.template.appendConsole(sizes["taglog"])
+        
+    def th_chkPerformance(self):
+        self.template.setResult("loading...")
+        th =Thread(target=self.chkPerformance)
+        th.start()
         
     def checkGzip(self):
         try:
@@ -130,17 +171,39 @@ class controller():
         except KeyError:
             self.template.setResult("There is no any compression configration at your server")
         
+    
+    def thChkUmS(self):
+        result  = " Unminify Scripts:<br>"
+        for i in  self.model.checkSourcesForMinify("script","src",self.path):
+            result+="<a href='"+i+"' >"+i+"</a><br>"
+
+        self.template.setResult(result)
+    
     def chkScriptUnMinify(self):
-        result  = " Unminify Scripts:\n"
-        for i in  self.model.checkSourcesForMinify("script","src",path):
-            result+=i+" \n"
-        self.template.setResult(result)
+        self.template.setResult("loading...")
+        th = Thread(target=self.thChkUmS)
+        th.start()
         
+        
+        
+    def thChkUmCss(self):
+        print("asdsd")
+        result  = " Unminify Css:<br>"
+        for i in  self.model.checkSourcesForMinify("script","src",self.path):
+            result+="<a href='"+i+"' >"+i+"</a><br>"
+
+        self.template.setResult(result)        
+        
+            
     def chkCssUnMinify(self):
-        result  = " Unminify Css:\n"
-        for i in  self.model.checkSourcesForMinify("script","src",path):
-            result+=i+" \n"
-        self.template.setResult(result)
+        self.template.setResult("loading...")
+        th = Thread(target=self.thChkUmCss)
+        th.start()
+        
+        
+    def clearConsole(self):
+        self.template.console.setPlainText("")
+        self.template.setResult("")
             
             
                     
@@ -162,10 +225,32 @@ class controller():
         self.template.cgkFlash.clicked.connect(lambda:self.chkFlash())
         self.template.btnIframe.clicked.connect(lambda:self.checkiframe())
         self.template.btnFavico.clicked.connect(lambda:self.chkFavico())
-        self.template.btnPerformance.clicked.connect(lambda:self.chkPerformance())
+        self.template.btnPerformance.clicked.connect(lambda:self.th_chkPerformance())
         self.template.checkGzip.clicked.connect(lambda:self.checkGzip())
-        self.template.btnScriptUnMinify.clicked.connect(lambda:self.chkScriptUnMinify()())
+        self.template.btnScriptUnMinify.clicked.connect(lambda:self.chkScriptUnMinify())
         self.template.btnCssUnMinify.clicked.connect(lambda:self.chkCssUnMinify())
+        self.template.clearConsole.clicked.connect(lambda:self.clearConsole())
+        
+        
+   
+    def initRequest(self):
+        
+        headers = { "header_name": "headers_value" }
+        params = {  "param_name": "param_value" }
+        path = self.template.searchBox.text()
+        print(path)
+        
+        if path!="":
+            try:
+                _request = requests.get(path, params=params, headers=headers)
+                self.model = model(_request)
+                self.routes()
+            except requests.exceptions.RequestException:
+                self.template.setResult("Unsuccesful request. Please check your Url!")
+
+
+
+    
 
         
         

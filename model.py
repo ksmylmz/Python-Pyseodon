@@ -3,15 +3,19 @@ from lib import lib
 import requests as rq
 from symbol import except_clause
 from select import select
+from click.termui import style
+
+
 
 
 
 class model(lib):
+    taglog = None
     
-    def __init__(self,content):
-        lib.__init__(self,content)
+    def __init__(self,_request):
+        lib.__init__(self,_request)
 
-
+       
 
     def saveLinkList(self):     
         links  = self.getAllTags("a")
@@ -50,7 +54,10 @@ class model(lib):
     
     def countAndListbyTagName(self,tag):
          tags = self.getTagsByName(tag)
-         result  = {"length":len(tags),"taglist":tags}
+         if tags is not None:
+             result  = {"length":len(tags),"taglist":tags}
+         else:
+            result=""
          return result
      
     def checkImgAlt(self):
@@ -74,9 +81,11 @@ class model(lib):
             if link["href"][0]=="#": continue
             if "mailto:" in link["href"]: continue
             path =link["href"]  if "http:" in link["href"] or "https:" in link["href"]  else baseurl+"/"+link["href"]
-            response = rq.get(path)
-            if response.status_code!=200: 
-                broken.append(path)             
+            try:
+                response = rq.get(path)
+            except rq.exceptions.RequestException:
+                broken.append(path)
+                             
         return broken
     
     def checkFrendlyUrl(self):
@@ -101,12 +110,12 @@ class model(lib):
             try:
                 fcontent =str(script)
                 if "analytics" in fcontent:
-                    return 1
+                    return {"result":1,"tag" :fcontent}
                 else:
                     continue
             except KeyError:
                 continue
-        return 0    
+        return  {"result":0}    
     
     def checkResponsive(self):
         metaTag = self.getbyProp("meta","name","viewport")
@@ -145,26 +154,42 @@ class model(lib):
     def checkSize(self,tagname,prop):
         tags= self.getTagsByName(tagname)
         filesize=0
-        
+
         if len(tags)>0:
             for tag in tags:
                 try:
                     src= tag[prop]
                             
-                    if tagname=="link" and "css" not in src: continue  
-                    filesize+=len(rq.get(tag[prop]).content)
+                    if tagname=="link" and "css" not in src: 
+                        continue
+                    if tagname=="style":
+                        filesize+= len(str(tag))
+                        continue
+                    
+                    self.taglog += "\n" + str(tag) 
+                    try:
+                        filesize+=len(rq.get(tag[prop]).content)
+                    except rq.exceptions.RequestException:
+                        continue
+                    
                 except KeyError:
+                   self.taglog += "\n" + str(tag)
                    filesize+=len(str(tag))
                    
-        return filesize/1024
+        return filesize/1024/1024
     
     def checkSizes(self):
-        img = self.checkSize("img","src")
-        style = self.checkSize("style","type")
+        
+        self.taglog=""
+        
+        img = round(self.checkSize("img","src"),2),
+        style = round(self.checkSize("style","type"))
         script = self.checkSize("script","src")
-        css = self.checkSize("link","href")
-        html = len(str(self.content))/1024
-        sizes = {"img":img,"css":style+css,"script":script,"html":html}
+        css = round(self.checkSize("link","href"),2)
+        html = round(len(str(self.content))/1024/1024,2)
+        print(img,style,script,css,html)
+        totalsize = round(img[0]+style+script+css+html,2)
+        sizes = {"img":img,"css":style+css,"script":script,"html":html,"totalsize":totalsize,"taglog":self.taglog}
         return sizes;
     
     def checkSourcesForMinify(self,tagname,prop,baseurl):
@@ -175,8 +200,13 @@ class model(lib):
                 try:
 
                     src =tag[prop]  if "http:" in tag[prop] or "https:" in tag[prop]  else baseurl+"/"+tag[prop]
-                    if tagname=="link" and "css" not in src: continue  
-                    _content = str(rq.get(src).content)
+                    if tagname=="link" and "css" not in src: continue 
+                     
+                    try:
+                        _content = str(rq.get(src).content)
+                    except rq.exceptions.RequestException:
+                        continue
+                    
                     if len(_content.split("/r"))>1 or len(_content.split("/n"))>1:
                         unminified.append(src)    
                 except KeyError:
