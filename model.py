@@ -77,14 +77,17 @@ class model(lib):
         broken=[]
         links = self.getTagsByName("a")
         for link in links:
-            if "javascript" in link["href"]: continue
-            if link["href"][0]=="#": continue
-            if "mailto:" in link["href"]: continue
-            path =link["href"]  if "http:" in link["href"] or "https:" in link["href"]  else baseurl+"/"+link["href"]
-            try:
-                response = rq.get(path)
-            except rq.exceptions.RequestException:
-                broken.append(path)
+            try:               
+                if "javascript" in link["href"]: continue
+                if link["href"][0]=="#": continue
+                if "mailto:" in link["href"]: continue
+                path =link["href"]  if "http:" in link["href"] or "https:" in link["href"]  else baseurl+"/"+link["href"]
+                try:
+                    response = rq.get(path)
+                except rq.exceptions.RequestException:
+                    broken.append(path)
+            except KeyError:
+                continue
                              
         return broken
     
@@ -212,6 +215,28 @@ class model(lib):
                 except KeyError:
                    continue
         return unminified
+    
+    
+    def checkInline(self):
+        tagsList = ['a', 'abbr', 'acronym', 'address', 'applet', 'area', 'article', 'aside', 'audio', 'b', 'base', 'basefont', 'bdi', 'bdo', 'big', 'blockquote', 'body', 'br', 'button', 'canvas', 'caption', 'center', 'cite', 'code', 'col', 'colgroup', 'data', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'dir', 'div', 'dl', 'dt', 'em', 'embed', 'fieldset', 'figcaption', 'figure', 'font', 'footer', 'form', 'frame', 'frameset', 'h1','h2','h3','h4','h5','h6', 'head', 'header', 'hr', 'html', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'main', 'map', 'mark', 'meta', 'meter', 'nav', 'noframes', 'noscript', 'object', 'ol', 'optgroup', 'option', 'output', 'p', 'param', 'picture', 'pre', 'progress', 'q', 'rp', 'rt', 'ruby', 's', 'samp', 'script', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'style', 'sub', 'summary', 'sup', 'svg', 'table', 'tbody', 'td', 'template', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr']
+        tagStrList="";
+        tagCount = 0
+        for i in tagsList:
+            tags= self.getTagsByName(i)
+            
+            for t in tags:
+                if self.issetKey(t,"style"):
+                    tagStrList+=str(t)+"<\n>"
+                    tagCount+=1
+                else:
+                    continue
+        
+        
+        return {"tagcount":tagCount,"tagStrList":tagStrList}
+                
+            
+        
+        
                       
         
 

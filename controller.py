@@ -7,9 +7,7 @@ import time
 from _operator import length_hint
 from logging import _startTime
 from threading import Thread
-
-
-
+from asyncio.tasks import sleep
 
 
 
@@ -184,10 +182,14 @@ class controller():
         th = Thread(target=self.thChkUmS)
         th.start()
         
+    def chkInlineStyle(self):
+        result  = self.model.checkInline()
+        self.template.setResult(str(result["tagcount"])+" tag dedected, has the inline css! ")
+        self.template.appendConsole(result["tagStrList"])
+        
         
         
     def thChkUmCss(self):
-        print("asdsd")
         result  = " Unminify Css:<br>"
         for i in  self.model.checkSourcesForMinify("script","src",self.path):
             result+="<a href='"+i+"' >"+i+"</a><br>"
@@ -204,8 +206,8 @@ class controller():
     def clearConsole(self):
         self.template.console.setPlainText("")
         self.template.setResult("")
-            
-            
+        
+           
                     
                 
 
@@ -229,64 +231,26 @@ class controller():
         self.template.checkGzip.clicked.connect(lambda:self.checkGzip())
         self.template.btnScriptUnMinify.clicked.connect(lambda:self.chkScriptUnMinify())
         self.template.btnCssUnMinify.clicked.connect(lambda:self.chkCssUnMinify())
+        self.template.btninlineCss.clicked.connect(lambda:self.chkInlineStyle())
         self.template.clearConsole.clicked.connect(lambda:self.clearConsole())
+
         
         
    
     def initRequest(self):
-        
         headers = { "header_name": "headers_value" }
         params = {  "param_name": "param_value" }
         path = self.template.searchBox.text()
-        print(path)
         
         if path!="":
             try:
                 _request = requests.get(path, params=params, headers=headers)
                 self.model = model(_request)
                 self.routes()
+                self.template.setResult("Connection Success")
             except requests.exceptions.RequestException:
                 self.template.setResult("Unsuccesful request. Please check your Url!")
+        else:
+            self.template.setResult("Missing Url for scan!")
 
-
-
-    
-
-        
-        
-        
-        
-        
-        
-
-"""
-title 10~70 +
-meta description 70 and 320 characters+
-count h tags - list g tag text+
-check image alt+
-broken link+
-frendly url+
-robot.txt-
-sitemap-
-
-check analytics tag+
-check responsive+ 
-flash check+
-check iframe+
-check favicon+
-
-count load page time+
-
-check images size, check css size, check js size,check html size,check total size+
-
-
-js errors-
-
-gzip compesion+
-
-check unsized images-
-
-js css mifycation+
-
-
-"""        
+      

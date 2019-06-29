@@ -62,6 +62,14 @@ class lib:
             return " Fix!"
         else:
             return "Perfect"
+        
+    def issetKey(self,tag,key):
+        try:
+            x= tag[key];
+            return 1
+        except KeyError:
+            return 0
+            
             
         
 

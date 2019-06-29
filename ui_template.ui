@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>871</width>
+    <height>658</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLineEdit" name="searchBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>710</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial Black</family>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius : 8%;
+border:solid 1px #ccc;</string>
+    </property>
+    <property name="placeholderText">
+     <string>input the scan url</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnsearchBox">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>10</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">    color: #FFF;
+	background-color :#C7AFBD;
+    border:solid 1px #FFF;
+   border-radius:5%;</string>
+    </property>
+    <property name="text">
+     <string>Scan</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../images/search.png</normaloff>../images/search.png</iconset>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>-20</y>
+      <width>871</width>
+      <height>641</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+      <horstretch>100</horstretch>
+      <verstretch>100</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="cursor">
+     <cursorShape>PointingHandCursor</cursorShape>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background:#DDECEF;
+color:rgb(0, 0, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>271</width>
+      <height>361</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="menuGrid">
+     <item row="4" column="0">
+      <widget class="QPushButton" name="btnsearchBox_11">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QPushButton" name="btnsearchBox_14">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QPushButton" name="btnsearchBox_6">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QPushButton" name="btnsearchBox_5">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="btnsearchBox_8">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QPushButton" name="btnsearchBox_15">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="btnsearchBox_4">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QPushButton" name="btnsearchBox_13">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QPushButton" name="btnsearchBox_9">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QPushButton" name="btnsearchBox_7">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="btnsearchBox_3">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="btnsearchBox_2">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QPushButton" name="btnsearchBox_12">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="btnsearchBox_10">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QPushButton" name="btnsearchBox_16">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QPushButton" name="btnsearchBox_17">
+       <property name="styleSheet">
+        <string notr="true">    color: #000;
+	background-color :#FDE8D7;
+    border:solid 1px #000;
+   border-radius:5%;
+padding:8px 16px;
+
+font: 75 10pt &quot;Arial&quot;;</string>
+       </property>
+       <property name="text">
+        <string>chk</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>60</y>
+      <width>281</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../images/poseidon_by_ungartattoo.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>50</y>
+      <width>301</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+      <underline>true</underline>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color:rgb(85, 0, 127);</string>
+    </property>
+    <property name="text">
+     <string>result</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>430</y>
+      <width>851</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="plainTextEdit">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>480</y>
+      <width>851</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border:5px solid #ccc;
+border-radius:5%;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>450</y>
+      <width>60</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:#ccc;</string>
+    </property>
+    <property name="text">
+     <string> Console </string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>440</y>
+      <width>47</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <underline>true</underline>
+     </font>
+    </property>
+    <property name="text">
+     <string>About</string>
+    </property>
+    <property name="openExternalLinks">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QToolButton" name="toolButton">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>450</y>
+      <width>31</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../images/clear.png</normaloff>../images/clear.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+   </widget>
+   <zorder>label</zorder>
+   <zorder>searchBox</zorder>
+   <zorder>btnsearchBox</zorder>
+   <zorder>gridLayoutWidget</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_3</zorder>
+   <zorder>line</zorder>
+   <zorder>plainTextEdit</zorder>
+   <zorder>label_4</zorder>
+   <zorder>label_5</zorder>
+   <zorder>toolButton</zorder>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
